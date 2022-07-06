@@ -42,7 +42,16 @@ Since it is not in control of the thread it shouldn't perform any long running o
 Instead it can use timers to get periodic notification.
 Additionally it can create publishers, subscribers, servers, and clients.
 
-An important aspect of making such a class a component is that the class registers itself using macros from the package ``rclcpp_components`` (see the last line in the source code).
+An important aspect of making such a class a component is that the class registers itself using macros from the package ``rclcpp_components`` e.g.:
+
+.. code-block:: cpp
+   #include "rclcpp_components/register_node_macro.hpp"
+
+   // Register the component with class_loader.
+   // This acts as a sort of entry point, allowing the component to be discoverable when its library
+   // is being loaded into a running process.
+   RCLCPP_COMPONENTS_REGISTER_NODE(composition::Talker)
+
 This makes the component discoverable when its library is being loaded into a running process - it acts as kind of an entry point.
 
 Additionally, once a component is created, it must be registered with the index to be discoverable by the tooling.
@@ -54,6 +63,13 @@ Additionally, once a component is created, it must be registered with the index 
    rclcpp_components_register_nodes(talker_component "composition::Talker")
    # To register multiple components in the same shared library, use multiple calls
    # rclcpp_components_register_nodes(talker_component "composition::Talker2")
+
+It is also possible to register a rclcpp component and create a standalone executable, e.g.:
+
+.. code-block:: cmake
+rclcpp_components_register_node(topics_library
+  PLUGIN "demo_nodes_cpp::Talker"
+  EXECUTABLE talker)
 
 .. note::
 
